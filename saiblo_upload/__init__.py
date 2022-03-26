@@ -29,7 +29,8 @@ def upload():
     parser.add_argument("--user", type=str, required=True, help="用户名")
     parser.add_argument("--game", type=str, required=True, help="游戏名")
     parser.add_argument("--name", type=str, required=True, help="AI 名称")
-    parser.add_argument("--remark", type=str, default="", help="AI 备注")
+    parser.add_argument("--repo", type=str, required=True, help="AI 仓库 url")
+    parser.add_argument("--commit", type=str, required=True, help="AI 提交哈希")
     parser.add_argument("--lang", type=Language, choices=list(Language), required=True, help="AI 语言")
     parser.add_argument("--path", type=str, required=True, help="代码目录")
     parser.add_argument("--dev", action="store_true", default=False, help="是否提交到 dev 站")
@@ -71,6 +72,9 @@ def upload():
                 if e["language"] != str(args.lang):
                     print(f"错误：AI 语言不一致。")
                     exit(1)
+                if e["repo"] != args.repo:
+                    print(f"错误：AI 仓库地址不一致。")
+                    exit(1)
                 entity = e
                 break
         else:
@@ -79,6 +83,7 @@ def upload():
                                    json={
                                        "language": str(args.lang),
                                        "name": args.name,
+                                       "repo": args.repo,
                                    }).json()
         entity_id = entity["id"]
 
@@ -90,7 +95,7 @@ def upload():
                 with open(zip_path, "rb") as f:
                     code = requests.post(f"{api_base}entities/{entity_id}/codes/",
                                          headers=headers,
-                                         data={"remark": args.remark},
+                                         data={"remark": args.commit},
                                          files={"file": f}).json()
                     version = code["version"]
 
