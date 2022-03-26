@@ -20,6 +20,10 @@ class Language(Enum):
         return self.value
 
 
+if "AUTH_TOKEN" not in os.environ:
+    print(f"错误：请设置环境变量 AUTH_TOKEN，内容为您的 Saiblo 登录口令。")
+    exit(1)
+
 AUTH = f"Token {os.environ['AUTH_TOKEN']}"
 headers = {"Authorization": AUTH}
 
