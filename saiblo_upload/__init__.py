@@ -28,6 +28,13 @@ AUTH = f"Token {os.environ['AUTH_TOKEN']}"
 headers = {"Authorization": AUTH}
 
 
+def file_filter(p):
+    for part in p.parts:
+        if part != "." and part != ".." and part.startswith("."):
+            return False
+    return True
+
+
 def upload():
     parser = argparse.ArgumentParser(prog="saiblo-upload", description="Saiblo AI 代码上传脚本")
     parser.add_argument("--game", type=str, required=True, help="游戏名")
@@ -55,7 +62,8 @@ def upload():
 
         with ZipFile(zip_path, "w") as f:
             for p in src_path.glob("**/*"):
-                f.write(p)
+                if file_filter(p):
+                    f.write(p)
 
         # 查找游戏
         games = requests.get(f"{api_base}games/").json()
