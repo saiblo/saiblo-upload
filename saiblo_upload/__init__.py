@@ -30,7 +30,6 @@ headers = {"Authorization": AUTH}
 
 def upload():
     parser = argparse.ArgumentParser(prog="saiblo-upload", description="Saiblo AI 代码上传脚本")
-    parser.add_argument("--user", type=str, required=True, help="用户名")
     parser.add_argument("--game", type=str, required=True, help="游戏名")
     parser.add_argument("--name", type=str, required=True, help="AI 名称")
     parser.add_argument("--repo", type=str, required=True, help="AI 仓库 url")
@@ -68,8 +67,11 @@ def upload():
             print(f"错误：游戏 {args.game} 未找到！")
             exit(1)
 
+        # 获取用户名
+        username = requests.get(f"{api_base}profile", headers=headers).json()["user"]["username"]
+
         # 查找 AI
-        entities = requests.get(f"{api_base}users/{args.user}/games/{game_id}/entities",
+        entities = requests.get(f"{api_base}users/{username}/games/{game_id}/entities",
                                 headers=headers).json()["entities"]
         for e in entities:
             if e["name"] == args.name:
@@ -82,7 +84,7 @@ def upload():
                 entity = e
                 break
         else:
-            entity = requests.post(f"{api_base}users/{args.user}/games/{game_id}/entities/",
+            entity = requests.post(f"{api_base}users/{username}/games/{game_id}/entities/",
                                    headers=headers,
                                    json={
                                        "language": str(args.lang),
