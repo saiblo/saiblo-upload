@@ -13,8 +13,8 @@ import websockets
 
 class Language(Enum):
     python_zip = "python_zip"
-    cmake = "cmake"
-    make = "make"
+    cpp_zip = "cpp_zip"
+    auto = "auto"
 
     def __str__(self):
         return self.value
