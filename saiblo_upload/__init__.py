@@ -40,6 +40,7 @@ def upload():
     parser.add_argument("--game", type=str, required=True, help="游戏名")
     parser.add_argument("--name", type=str, required=True, help="AI 名称")
     parser.add_argument("--repo", type=str, required=True, help="AI 仓库 url")
+    parser.add_argument("--remark", type=str, required=True, help="AI 版本备注")
     parser.add_argument("--commit", type=str, required=True, help="AI 提交哈希")
     parser.add_argument("--lang", type=Language, choices=list(Language), required=True, help="AI 语言")
     parser.add_argument("--path", type=str, required=True, help="代码目录")
@@ -109,7 +110,7 @@ def upload():
                 with open(zip_path, "rb") as f:
                     code = requests.post(f"{api_base}entities/{entity_id}/codes/",
                                          headers=headers,
-                                         data={"remark": args.commit},
+                                         data={"remark": args.remark, "commit_id": args.commit},
                                          files={"file": f}).json()
                     version = code["version"]
 
